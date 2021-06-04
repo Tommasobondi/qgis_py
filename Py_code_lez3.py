@@ -134,7 +134,7 @@ new_tab.writerow(header)
 #quandoi finisco questa operazione per permettere di salvare devo chiudere file che ho aperto
 my_csv.close()
 new_csv.close()
-#ora, in cartella indicata in line 127 avro nuovo file
+#ora, in cartella indicata in line 129 avro nuovo file
 
         
         
