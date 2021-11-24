@@ -1,0 +1,35 @@
+>>> # Importing numpy library as nmpimport numpy as nmp
+>>> import numpy as nmp
+>>> import pandas as pds
+>>> import matplotlib.pyplot as pplt
+>>> from sklearn.cluster import DBSCAN
+>>> from sklearn.preprocessing import StandardScaler
+>>> from sklearn.preprocessing import normalize
+>>> from sklearn.decomposition import PCA
+>>> M = pds.read_csv('C:\\Users\\tommaso\\Desktop\\GIS DataBase\\progetto\\database\\dati interpolati\\Quote_vettoriali_altimetria_interpolate.csv')
+>>> M.fillna(method ='ffill', inplace = True)
+>>> print(M.head())
+#          est         nord  altimetria
+#0  349249.223  4038944.227         0.0
+#1  349348.965  4038944.227         0.0
+#2  349448.707  4038944.227         0.0
+#3  349548.449  4038944.227         0.0
+#4  349648.191  4038944.227         0.0
+>>> scalerFD = StandardScaler()
+>>> M_scaled = scalerFD.fit_transform(M)
+>>> M_normalized = normalize(M_scaled)
+>>> M_normalized = pds.DataFrame(M_normalized)
+>>> pcaFD = PCA(n_components = 3)
+>>> M_principal = pcaFD.fit_transform(M_normalized)
+>>> M_principal = pds.DataFrame(M_principal)
+>>> M_principal.columns = ['C1', 'C2', 'C3']
+>>> print(M_principal.head())
+#         C1        C2        C3
+#0 -0.337135 -0.873669  0.205957
+#1 -0.331829 -0.876097  0.204079
+#2 -0.326446 -0.878519  0.202175
+#3 -0.320985 -0.880934  0.200244
+#4 -0.315444 -0.883340  0.198287
+>>> db_default = DBSCAN(eps = 0.0375, min_samples = 10).fit(M_principal)
+>>> labeling = db_default.labels_
+>>> len(set(labeling))
