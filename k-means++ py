@@ -26,7 +26,40 @@ data = np.vstack((dist_01, dist_02, dist_03, dist_04))
 np.random.shuffle(data)
 '''
 '''import
-
+# Loading the data inside an initialized variable
+>>> M = pds.read_csv('\\Users\\tommaso\\Desktop\\GIS DataBase\\progetto\\database\\dati interpolati\\Quote_vettoriali_altimetria_interpolate_epurate mare.csv')
+# Dropping the CUST_ID column from the dataset with drop() function 
+>>> M.fillna(method ='ffill', inplace = True)
+# Printing dataset head in output 
+>>> print(M.head())
+'''
+est         nord  altimetria
+0  362215.689  4025912.136     545.917
+1  362115.947  4025912.136     543.083
+2  362215.689  4026012.383     523.667
+3  362115.947  4026012.383     516.250
+4  362315.431  4026012.383     515.500
+'''
+# Initializing a variable with the StandardSclaer() function
+>>> scalerFD = StandardScaler()
+# Transforming the data of dataset with Scaler
+>>> M_scaled = scalerFD.fit_transform(M)
+# To make sure that data will follow gaussian distribution  
+# We will normalize the scaled data with normalize() function
+# Now we will convert numpy arrays in the dataset into dataframes of panda
+>>> M_normalized = normalize(M_scaled)
+>>> M_normalized = pds.DataFrame(M_normalized)
+# Initializing a variable with the PCA() function 
+>>> pcaFD = PCA(n_components = 3)
+# Transforming the normalized data with PCA 
+>>> M_principal = pcaFD.fit_transform(M_normalized)
+# Making dataframes from the transformed data
+>>> data = pds.DataFrame(M_principal)
+# Creating 3 columns in the transformed data (x, y, z axes) 
+>>> data.columns = ['C1', 'C2', 'C3']
+# Printing the head of the transformed data
+#try of setting the 2 parameters of dbscan
+>>> print(data.head())
 '''
 # function to plot founded centroids!!! fond!!
 def plot(data, centroids):
