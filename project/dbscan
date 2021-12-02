@@ -1,0 +1,172 @@
+#import numpy as nmp/Importing pandas library as pds/Importing matplotlib library as pplt/ Importing DBSCAN from cluster module of Sklearn library
+#Importing StandardSclaer and normalize from preprocessing module of Sklearn library
+# Importing PCA from decomposition module of Sklearn 
+import sys, random, datetime
+import pandas as pds
+import matplotlib.pyplot as plt
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import normalize
+from sklearn.decomposition import PCA
+
+
+
+
+def show_Clusters(X, ClustersNum):
+  #df = DataFrame(dict(x=X[:,0], y=X[:,1], label=X[:,2]))
+  #colors = {"Core": 'blue', "Boundary":'orange', "Noise":'green'}
+  colors_rnd_ = lambda n: list(map(lambda i: "#" + "%06x" % random.randint(0, 0xFFFFFF),range(n)))
+
+  colors_rnd = colors_rnd_(ClustersNum+1)
+  colors = {}
+  for i in range (0,ClustersNum):
+    colors[i] = colors_rnd[i]
+  fig, ax = plt.subplots(figsize=(8,8))
+  grouped = X.groupby('Cluster')
+  for key, group in grouped:
+    group.plot(ax=ax, kind='scatter', x='est', y='nord', label=key, color=colors[key])
+  plt.xlabel('X')
+  plt.ylabel('Y')
+  plt.gca().set_aspect('equal', adjustable='box')
+  plt.show()
+  
+
+
+# Loading the data inside an initialized variable
+M = pds.read_csv("C:\\Temp\\DTM.csv")
+M = pds.read_csv("C:\\Temp\\DTM_Lesvso.txt")
+M = M.drop(['FID'], axis=1)
+
+
+
+# Dropping the CUST_ID column from the dataset with drop() function 
+M.fillna(method ='ffill', inplace = True)
+# Printing dataset head in output 
+print(M.head())
+'''
+est         nord  altimetria
+0  362215.689  4025912.136     545.917
+1  362115.947  4025912.136     543.083
+2  362215.689  4026012.383     523.667
+3  362115.947  4026012.383     516.250
+4  362315.431  4026012.383     515.500
+'''
+# Initializing a variable with the StandardSclaer() function
+scalerFD = StandardScaler()
+# Transforming the data of dataset with Scaler
+M_scaled = scalerFD.fit_transform(M)
+# To make sure that data will follow gaussian distribution  
+# We will normalize the scaled data with normalize() function
+# Now we will convert numpy arrays in the dataset into dataframes of panda
+M_normalized = normalize(M_scaled)
+M_normalized = pds.DataFrame(M_normalized)
+# Initializing a variable with the PCA() function 
+pcaFD = PCA(n_components = 3)
+# Transforming the normalized data with PCA 
+M_principal = pcaFD.fit_transform(M_normalized)
+# Making dataframes from the transformed data
+M_principal = pds.DataFrame(M_principal)
+# Creating 3 columns in the transformed data (x, y, z axes) 
+M_principal.columns = ['C1', 'C2', 'C3']
+# Printing the head of the transformed data
+#try of setting the 2 parameters of dbscan
+print(M_principal.head())
+
+
+'''
+         C1        C2        C3
+0 -0.313435 -0.639298  0.698422
+1 -0.312114 -0.636995  0.701584
+2 -0.321286 -0.640565  0.692337
+3 -0.322372 -0.637830  0.694523
+4 -0.328389 -0.642156  0.686223
+db_default = DBSCAN(eps = 0.175, min_samples = 10).fit(M_principal)
+labeling = db_default.labels_
+len(set(labeling))
+3
+db_default = DBSCAN(eps = 0.375, min_samples = 10).fit(M_principal)
+labeling = db_default.labels_
+len(set(labeling))
+1
+db_default = DBSCAN(eps = 0.04, min_samples = 10).fit(M_principal)
+labeling = db_default.labels_
+len(set(labeling))
+60
+db_default = DBSCAN(eps = 0.08, min_samples = 10).fit(M_principal)
+labeling = db_default.labels_
+len(set(labeling))
+14
+db_default = DBSCAN(eps = 0.08, min_samples = 14).fit(M_principal)
+labeling = db_default.labels_
+len(set(labeling))
+4
+'''
+
+start_time = datetime.datetime.now()
+
+# Creating clustering model of the data using the DBSCAN function and providing parameters in it 
+db_default = DBSCAN(eps = 60, min_samples = 9).fit(M)
+# Labelling the clusters we have created in the dataset 
+labeling = db_default.labels_
+#see how many clusters has it found on the dataset, we can just convert this array into a set and we can print the length of the set. Now you can see that it is 6.
+#ATTENTION, errosrs (-1) is a "cluster" but it's not counted
+len(set(labeling))
+
+M['Cluster'] = labeling.tolist()
+
+print("Run Time:", datetime.datetime.now() - start_time)
+print("Number of Clusters: ", len(set(labeling)))
+
+colors_rnd_ = lambda n: list(map(lambda i: "#" + "%06x" % random.randint(0, 0xFFFFFF),range(n)))
+
+colors_rnd = colors_rnd_(len(set(labeling))+1)
+colors = {}
+for i in range (-1,len(set(labeling))):
+  colors[i] = colors_rnd[i]
+fig, ax = plt.subplots(figsize=(8,8))
+grouped = M.groupby('Cluster')
+for key, group in grouped:
+  group.plot(ax=ax, kind='scatter', x='POINT_X', y='POINT_Y', label=key, color=colors[key])
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.gca().set_aspect('equal', adjustable='box')
+plt.show()
+
+
+sys.exit()
+#resoult of clusterisation!!!!!
+#6
+# Visualization of clustering model by giving different colours
+colours = {}
+#frist colour, second etc etc
+#assigne to a cluster a colour!
+colours[-1]='r'
+colours[0]='k'
+colours[1]='b'
+colours[2]='g'
+colours[3]='c'
+colours[4]='m'
+colours[5]='pink'
+# Creating a colour vector for each data point in the dataset cluster
+jari = [colours[label] for label in labeling]
+# Construction of the legend  
+# Scattering of colours  
+g = pplt.scatter(M_principal['C1'], M_principal['C2'], color ='g');
+r = pplt.scatter(M_principal['C1'], M_principal['C2'], color ='r');
+k = pplt.scatter(M_principal['C1'], M_principal['C2'], color ='k');
+b = pplt.scatter(M_principal['C1'], M_principal['C2'], color ='b');
+c = pplt.scatter(M_principal['C1'], M_principal['C2'], color ='c');
+m = pplt.scatter(M_principal['C1'], M_principal['C2'], color ='m');
+pink = pplt.scatter(M_principal['C1'], M_principal['C2'], color ='pink');
+# Plotting C1 column on the X-Axis and C2 on the Y-Axis  
+# Fitting the size of the figure with figure function   
+# Scattering the data points in the Visualization graph
+pplt.figure(figsize =(18, 18))
+#<Figure size 1800x1800 with 0 Axes>
+pplt.scatter(M_principal['C1'], M_principal['C2'], c = jari)
+#<matplotlib.collections.PathCollection object at 0x000001606233FBE0>
+# Building the legend with the coloured data points and labelled, remenber line 84 and 95!!!
+pplt.legend((g, r, k, b, c, m, pink), ('Label M.2', 'Label M.-1', 'Label M.0', 'Label M.1', 'Label M.3', 'Label M.4', 'label M.5'))
+#<matplotlib.legend.Legend object at 0x000001606233FFA0>
+#polt and visualize
+pplt.show()
