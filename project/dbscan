@@ -134,6 +134,7 @@ plt.show()
 
 
 sys.exit()
+'''
 #resoult of clusterisation!!!!!
 #6
 # Visualization of clustering model by giving different colours
@@ -170,3 +171,4 @@ pplt.legend((g, r, k, b, c, m, pink), ('Label M.2', 'Label M.-1', 'Label M.0', '
 #<matplotlib.legend.Legend object at 0x000001606233FFA0>
 #polt and visualize
 pplt.show()
+'''
