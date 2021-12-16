@@ -26,7 +26,7 @@ dist_04 = np.random.multivariate_normal(mean_04, cov_01, 100)
 data = np.vstack((dist_01, dist_02, dist_03, dist_04))
 np.random.shuffle(data)
 
-####import
+####import- copied form first dbscan alg
 # Loading the data inside an initialized variable
 M = pds.read_csv('\\Users\\tommaso\\Desktop\\GIS DataBase\\progetto\\database\\dati interpolati\\Quote_vettoriali_altimetria_interpolate_epurate mare.csv')
 # Dropping the CUST_ID column from the dataset with drop() function 
@@ -102,6 +102,7 @@ def initialize(data, k):
     return centroids
 
 #run it!!!-try different k
+#insert the alg that define the optimal number of cent after line 57- and recall !!!!!!!!!!!!
 #centroids = initialize(data, k = 4)
 #centroids = initialize(data, k = 2)
 #centroids = initialize(data, k = 10)
