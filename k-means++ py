@@ -83,8 +83,7 @@ def distance(p1, p2):
 # 5)select data point with maximum distance as our next centroid
 def initialize(data, k):
     centroids = []
-    centroids.append(data[np.random.randint(
-            data.shape[0]), :])
+    centroids.append(data[np.random.randint(data.shape[0]), :])
     plot(data, np.array(centroids))
     for c_id in range(k - 1):
         dist = []
