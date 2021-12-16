@@ -107,3 +107,5 @@ def initialize(data, k):
 #centroids = initialize(data, k = 4)
 #centroids = initialize(data, k = 2)
 #centroids = initialize(data, k = 10)
+print("Run Time:", datetime.datetime.now() - start_time)
+sys.exit()
