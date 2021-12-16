@@ -54,6 +54,7 @@ data.columns = ['C1', 'C2', 'C3']
 #try of setting the 2 parameters of dbscan
 print(data.head())
 '''
+start_time = datetime.datetime.now()
 # function to plot founded centroids!!! fond!!
 def plot(data, centroids):
      plt.scatter(data[:, 0], data[:, 1], marker = '.',
